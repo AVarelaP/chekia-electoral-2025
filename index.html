@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Honduras en año electoral: bulos y discursos de odio — Chekiá</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#1B2D4F;--navyDk:#0F1D33;--navyLt:#2B4C7E;
+  --red:#C0392B;--white:#FFFFFF;--paper:#F7F9FC;--ink:#1E293B;
+  --gray:#64748B;--grayLt:#E8EDF4;--grayMd:#CBD5E1;
+  --green:#15803D;--amber:#B45309;--purple:#6D28D9;--teal:#0E7490;
+  --font-sans:'Segoe UI','Arial',sans-serif;
+  --font-serif:Georgia,'Times New Roman',serif;
+  --font-mono:'Courier New',monospace;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-sans);background:var(--paper);color:var(--ink);font-size:16px;line-height:1.65;overflow-x:hidden}
+#progress-bar{position:fixed;top:0;left:0;height:3px;background:var(--red);width:0%;z-index:9999;transition:width .1s linear}
+
+/* TICKER */
+.ticker-wrap{background:var(--navyDk);overflow:hidden;height:30px;display:flex;align-items:center;border-bottom:2px solid var(--red)}
+.ticker-label{background:var(--red);color:#fff;font-size:10px;font-weight:700;letter-spacing:2px;padding:0 14px;height:30px;display:flex;align-items:center;white-space:nowrap;flex-shrink:0;text-transform:uppercase}
+.ticker-track{flex:1;overflow:hidden}
+.ticker-inner{display:flex;gap:48px;white-space:nowrap;animation:ticker 32s linear infinite}
+.ticker-inner span{font-size:10px;color:#94A3B8;letter-spacing:2px;text-transform:uppercase}
+.ticker-inner span strong{color:#E2E8F0}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
+/* NAV */
+nav{background:var(--navy);position:sticky;top:0;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.3)}
+.nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:52px}
+.nav-brand{color:#fff;font-weight:700;font-size:15px;text-decoration:none;display:flex;align-items:center;gap:8px}
+.nav-badge{background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:2px 7px;border-radius:2px;letter-spacing:1px}
+.nav-links{display:flex;list-style:none;gap:2px;flex-wrap:wrap}
+.nav-links a{color:#94A3B8;text-decoration:none;font-size:12px;padding:5px 10px;border-radius:4px;transition:all .2s;white-space:nowrap}
+.nav-links a:hover,.nav-links a.active{color:#fff;background:rgba(255,255,255,.12)}
+.nav-toggle{display:none;background:none;border:none;color:#fff;font-size:20px;cursor:pointer;padding:4px 8px}
+@media(max-width:960px){
+  .nav-links{display:none;flex-direction:column;position:absolute;top:52px;left:0;right:0;background:var(--navyDk);padding:8px 0;z-index:999}
+  .nav-links.open{display:flex}
+  .nav-links a{padding:10px 20px;border-radius:0;font-size:13px}
+  .nav-toggle{display:block}
+}
+
+/* HERO */
+#portada{background:var(--navyDk);min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:80px 48px 60px;position:relative;overflow:hidden}
+#portada::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 75% 35%,rgba(192,57,43,.18) 0%,transparent 60%);pointer-events:none}
+.hero-eyebrow{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#7EB8E0;margin-bottom:18px;display:block}
+.hero-h1{font-family:var(--font-serif);font-size:clamp(28px,5vw,62px);font-weight:700;color:#fff;line-height:1.08;max-width:860px;margin-bottom:24px}
+.hero-h1 em{font-style:normal;color:#F87171}
+.hero-deck{font-size:16px;color:#94A3B8;max-width:560px;line-height:1.65;margin-bottom:44px}
+.hero-meta{display:flex;flex-wrap:wrap;gap:28px;margin-bottom:44px}
+.hero-meta-item{border-left:2px solid var(--red);padding-left:12px}
+.hero-meta-item strong{display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:#64748B;margin-bottom:2px}
+.hero-meta-item span{font-size:13px;color:#CBD5E1}
+.hero-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;max-width:720px}
+.hero-kpi{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:18px 14px;text-align:center}
+.hero-kpi-n{font-family:var(--font-mono);font-size:30px;font-weight:700;color:#7EB8E0;display:block}
+.hero-kpi-l{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#64748B;margin-top:5px;display:block}
+.scroll-cue{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);color:#475569;font-size:11px;letter-spacing:2px;text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:5px;animation:bob 2.2s ease-in-out infinite}
+.scroll-cue::after{content:'↓';font-size:18px}
+@keyframes bob{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(7px)}}
+
+/* SECTIONS */
+.section{max-width:860px;margin:0 auto;padding:72px 24px}
+.section-wide{max-width:1080px;margin:0 auto;padding:72px 24px}
+.bg-dark{background:var(--navyDk)}
+.bg-alt{background:#EFF4FB}
+.section-rule{border:none;border-top:1px solid var(--grayLt);margin:0}
+.eyebrow{font-size:11px;letter-spacing:4px;text-transform:uppercase;color:var(--teal);display:block;margin-bottom:10px}
+.bg-dark .eyebrow{color:#7EB8E0}
+h2{font-family:var(--font-serif);font-size:clamp(22px,3.5vw,38px);font-weight:700;line-height:1.15;margin-bottom:16px;color:var(--ink)}
+.bg-dark h2{color:#F1F5F9}
+h3{font-size:19px;font-weight:700;color:var(--navy);margin:24px 0 10px}
+.bg-dark h3{color:#E2E8F0}
+p{margin-bottom:14px;color:#374151}
+.bg-dark p{color:#CBD5E1}
+.drop-cap::first-letter{font-size:3.8em;font-weight:700;float:left;line-height:.82;margin:4px 9px 0 0;color:var(--red)}
+
+/* BIG NUMBER */
+.big-reveal{background:var(--navyDk);text-align:center;padding:88px 24px}
+.big-num{font-family:var(--font-mono);font-size:clamp(64px,15vw,148px);font-weight:700;color:#7EB8E0;line-height:1;display:block;opacity:0;transform:translateY(22px);transition:opacity .8s ease,transform .8s ease}
+.big-num.vis{opacity:1;transform:translateY(0)}
+.big-lbl{font-size:clamp(12px,2vw,17px);color:#94A3B8;letter-spacing:3px;text-transform:uppercase;margin-top:12px;display:block;opacity:0;transition:opacity .8s ease .4s}
+.big-lbl.vis{opacity:1}
+.big-sub{font-size:13px;color:#475569;margin-top:8px;display:block;opacity:0;transition:opacity .8s ease .8s}
+.big-sub.vis{opacity:1}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:24px 0}
+.card{background:#fff;border-radius:8px;border:1px solid var(--grayLt);padding:20px;box-shadow:0 2px 7px rgba(0,0,0,.06);opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.card.vis{opacity:1;transform:translateY(0)}
+.card-dk{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1)}
+.card-n{font-family:var(--font-mono);font-size:38px;font-weight:700;line-height:1;display:block}
+.card-lbl{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:5px;display:block}
+.card-desc{font-size:12.5px;color:#6B7280;margin-top:9px;line-height:1.5}
+.card-dk .card-desc{color:#94A3B8}
+
+/* VERDICT */
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0}
+.vc{padding:20px;border-radius:8px;opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.vc.vis{opacity:1;transform:translateY(0)}
+.vc-v{background:#DCFCE7;border-left:4px solid var(--green)}
+.vc-f{background:#FEE2E2;border-left:4px solid var(--red)}
+.vc-nc{background:#EDE9FE;border-left:4px solid var(--purple)}
+.vc-e{background:#FEF3C7;border-left:4px solid var(--amber)}
+.vc-n{font-family:var(--font-mono);font-size:48px;font-weight:700;line-height:1}
+.vc-v .vc-n{color:var(--green)}.vc-f .vc-n{color:var(--red)}
+.vc-nc .vc-n{color:var(--purple)}.vc-e .vc-n{color:var(--amber)}
+.vc-lbl{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:5px;color:#374151}
+.vc-pct{font-family:var(--font-mono);font-size:11px;color:#6B7280;margin-top:2px}
+.vc-def{font-size:12px;color:#374151;margin-top:8px;line-height:1.5}
+
+/* TIMELINE */
+.timeline{position:relative;margin:36px 0;padding-left:28px}
+.timeline::before{content:'';position:absolute;left:5px;top:0;bottom:0;width:2px;background:var(--grayMd)}
+.tl-item{position:relative;margin-bottom:32px;opacity:0;transform:translateX(-14px);transition:opacity .5s ease,transform .5s ease}
+.tl-item.vis{opacity:1;transform:translateX(0)}
+.tl-dot{position:absolute;left:-25px;top:6px;width:12px;height:12px;border-radius:50%;border:2px solid #fff}
+.tl-box{background:#fff;border-radius:8px;border:1px solid var(--grayLt);padding:16px 18px;box-shadow:0 2px 6px rgba(0,0,0,.05)}
+.tl-period{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:5px}
+.tl-title{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:7px}
+.tl-stat{font-family:var(--font-mono);font-size:28px;font-weight:700;line-height:1}
+.tl-meta{font-size:12px;color:#6B7280;margin-top:4px}
+
+/* CHART */
+.chart-box{background:#fff;border-radius:8px;border:1px solid var(--grayLt);padding:22px;margin:24px 0;box-shadow:0 2px 7px rgba(0,0,0,.05);opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.chart-box.vis{opacity:1;transform:translateY(0)}
+.chart-title{font-size:13px;font-weight:700;color:var(--navy);margin-bottom:3px}
+.chart-sub{font-size:11px;color:var(--gray);margin-bottom:16px}
+.chart-wrap{position:relative}
+
+/* TABLE */
+.dtable{width:100%;border-collapse:collapse;font-size:12.5px;margin:18px 0}
+.dtable th{background:var(--navyDk);color:#fff;padding:9px 11px;text-align:left;font-weight:700;font-size:10px;letter-spacing:1px;text-transform:uppercase}
+.dtable td{padding:8px 11px;border-bottom:1px solid var(--grayLt);color:var(--ink)}
+.dtable tr:nth-child(even) td{background:#F3F6FB}
+.dtable tr:last-child td{background:var(--navy);color:#fff;font-weight:700}
+.pct{font-family:var(--font-mono);font-weight:700}
+.tag{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700;letter-spacing:1px}
+.t-pre{background:#DBEAFE;color:#1D4ED8}
+.t-elec{background:#FEE2E2;color:#B91C1C}
+.t-nov{background:#EDE9FE;color:#6D28D9}
+.t-post{background:#DCFCE7;color:#15803D}
+.t-tardio{background:#0F1D33;color:#7EB8E0}
+
+/* ALERT */
+.alert{padding:16px 20px;border-radius:6px;margin:18px 0;opacity:0;transition:opacity .6s ease}
+.alert.vis{opacity:1}
+.alert-warn{background:#FEF3C7;border-left:4px solid var(--amber)}
+.alert-info{background:#EFF6FF;border-left:4px solid var(--teal)}
+.alert-danger{background:#1A2E4A;border-left:4px solid var(--red);color:#E2E8F0}
+.alert-success{background:#DCFCE7;border-left:4px solid var(--green)}
+.alert strong{display:block;margin-bottom:4px;font-size:11px;text-transform:uppercase;letter-spacing:1px}
+.alert-danger strong{color:#F87171}
+.alert-danger p{color:#CBD5E1 !important}
+.alert p{margin:0;font-size:12.5px;line-height:1.6}
+
+/* GLOSARIO */
+.glosario-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:24px 0}
+.glosario-card{background:#fff;border-radius:8px;border:1px solid var(--grayLt);padding:18px;border-left-width:4px;border-left-style:solid;opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease}
+.glosario-card.vis{opacity:1;transform:translateY(0)}
+.glosario-term{font-size:13px;font-weight:700;margin-bottom:5px}
+.glosario-def{font-size:12px;color:#374151;line-height:1.55}
+
+/* OBJETIVOS */
+.obj-list{list-style:none;margin:18px 0}
+.obj-item{display:flex;gap:14px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.1);opacity:0;transform:translateX(-12px);transition:opacity .5s ease,transform .5s ease}
+.obj-item.vis{opacity:1;transform:translateX(0)}
+.obj-num{font-family:var(--font-mono);font-size:20px;font-weight:700;color:var(--red);flex-shrink:0;line-height:1.3;min-width:32px}
+.obj-text{font-size:13.5px;color:#CBD5E1;line-height:1.6}
+
+/* HALLAZGO */
+.hallazgo{background:#fff;border-radius:10px;border:1px solid var(--grayLt);overflow:hidden;margin-bottom:22px;box-shadow:0 2px 9px rgba(0,0,0,.07);opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.hallazgo.vis{opacity:1;transform:translateY(0)}
+.hallazgo-hdr{padding:16px 20px;display:flex;align-items:center;gap:12px}
+.hallazgo-num{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:16px;color:#fff;flex-shrink:0;background:rgba(255,255,255,.2)}
+.hallazgo-title{font-size:15px;font-weight:700;color:#fff;line-height:1.3}
+.hallazgo-body{padding:0 20px 18px}
+
+/* CONCLUSIÓN HIPÓTESIS */
+.hipotesis-box{background:#152238;border-radius:8px;border-left:4px solid var(--red);padding:22px 26px;margin-top:20px;opacity:0;transition:opacity .7s ease}
+.hipotesis-box.vis{opacity:1}
+.hipotesis-label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#7EB8E0;margin-bottom:10px;display:block}
+.hipotesis-text{font-size:13.5px;color:#D0E4F7;line-height:1.72;margin:0}
+
+/* REC */
+.rec-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin:24px 0}
+.rec-card{background:#fff;border-radius:8px;border-top:4px solid;padding:18px;box-shadow:0 2px 7px rgba(0,0,0,.05);opacity:0;transform:translateY(12px);transition:opacity .5s ease,transform .5s ease}
+.rec-card.vis{opacity:1;transform:translateY(0)}
+.rec-actor{font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.rec-card ul{padding-left:14px}
+.rec-card li{font-size:12.5px;color:#374151;margin-bottom:6px;line-height:1.5}
+
+/* PULL QUOTE */
+.pull-quote{border-left:4px solid var(--red);padding:8px 26px;margin:24px 0;opacity:0;transition:opacity .6s ease}
+.pull-quote.vis{opacity:1}
+.pull-quote p{font-family:var(--font-serif);font-size:21px;font-style:italic;color:var(--navy);margin:0;line-height:1.45}
+.bg-dark .pull-quote p{color:#E2E8F0}
+
+/* CLOSING */
+#preguntas{background:var(--navyDk);padding:90px 48px;text-align:center}
+.closing-line{font-family:var(--font-serif);font-size:clamp(20px,4.5vw,50px);font-weight:700;color:#F1F5F9;line-height:1.2;max-width:660px;margin:0 auto 24px}
+.closing-line em{font-style:normal;color:#F87171}
+.closing-meta{font-size:12px;color:#475569;letter-spacing:2px;text-transform:uppercase}
+.closing-url{font-family:var(--font-mono);font-size:15px;color:#7EB8E0;margin-top:14px;display:block;text-decoration:none}
+
+/* FOOTER */
+footer{background:var(--ink);padding:24px 48px;text-align:center}
+footer p{font-size:11px;color:#475569;line-height:1.8}
+footer a{color:#7EB8E0;text-decoration:none}
+.footnote{font-size:11px;color:#9CA3AF;border-top:1px solid var(--grayLt);padding-top:12px;margin-top:28px;line-height:1.7}
+
+@media(max-width:640px){
+  #portada{padding:56px 18px 44px}
+  .section,.section-wide{padding:50px 16px}
+  .vgrid,.grid2,.grid3,.glosario-grid{grid-template-columns:1fr}
+  .hero-kpis{grid-template-columns:1fr 1fr}
+  #preguntas{padding:60px 20px}
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <span class="ticker-label">CHEKIÁ</span>
+  <div class="ticker-track">
+    <div class="ticker-inner">
+      <span><strong>Periodismo de Investigación II</strong></span>
+      <span>CEUTEC · Carrera de Periodismo</span>
+      <span><strong>2026</strong></span>
+      <span>UNITEC · Honduras</span>
+      <span><strong>Chekiá</strong> · Verificamos hechos. Fortalecemos la democracia.</span>
+      <span>chekia.unitec.edu</span>
+      <span><strong>Periodismo de Investigación II</strong></span>
+      <span>CEUTEC · Carrera de Periodismo</span>
+      <span><strong>2026</strong></span>
+      <span>UNITEC · Honduras</span>
+      <span><strong>Chekiá</strong> · Verificamos hechos. Fortalecemos la democracia.</span>
+      <span>chekia.unitec.edu</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-brand" href="#portada"><span class="nav-badge">CHEKIÁ</span>Honduras Electoral 2025</a>
+    <button class="nav-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')" aria-label="Menú">☰</button>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#portada">Portada</a></li>
+      <li><a href="#relevancia">Relevancia</a></li>
+      <li><a href="#glosario">Glosario</a></li>
+      <li><a href="#objetivos">Objetivos</a></li>
+      <li><a href="#metodologia">Metodología</a></li>
+      <li><a href="#hallazgos">Hallazgos</a></li>
+      <li><a href="#conclusiones">Conclusiones</a></li>
+      <li><a href="#recomendaciones">Recomendaciones</a></li>
+      <li><a href="#preguntas">Q&amp;A</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- ══ 1. PORTADA ══════════════════════════════════════════════ -->
+<section id="portada">
+  <span class="hero-eyebrow">Periodismo de Investigación II · CEUTEC · UNITEC Honduras · 2026</span>
+  <h1 class="hero-h1">Honduras en año electoral:<br>propagación de <span style="color:#fff;font-style:normal">bulos</span> y<br>discursos de odio en redes sociales</h1>
+  <p class="hero-deck">Análisis de 104 verificaciones publicadas por Chekiá durante el ciclo electoral 2025–2026. Un mapa de la desinformación que intentó moldear la democracia hondureña.</p>
+  <div class="hero-meta">
+    <div class="hero-meta-item"><strong>Docente</strong><span>Haydi Carrasco</span></div>
+    <div class="hero-meta-item"><strong>Sede</strong><span>CEUTEC Tegucigalpa</span></div>
+    <div class="hero-meta-item"><strong>Período</strong><span>Junio 2025 – Febrero 2026</span></div>
+    <div class="hero-meta-item"><strong>Asignatura</strong><span>Periodismo de Investigación II</span></div>
+  </div>
+  <div class="hero-kpis">
+    <div class="hero-kpi"><span class="hero-kpi-n">104</span><span class="hero-kpi-l">verificaciones</span></div>
+    <div class="hero-kpi"><span class="hero-kpi-n">51.9%</span><span class="hero-kpi-l">tasa desinfo.</span></div>
+    <div class="hero-kpi"><span class="hero-kpi-n">7</span><span class="hero-kpi-l">meses activos</span></div>
+    <div class="hero-kpi"><span class="hero-kpi-n">9</span><span class="hero-kpi-l">plataformas</span></div>
+  </div>
+  <span class="scroll-cue">Desplázate para leer</span>
+</section>
+
+<!-- BIG NUMBER -->
+<div class="big-reveal">
+  <span class="big-num" id="bn1">51.9%</span>
+  <span class="big-lbl" id="bl1">del contenido verificado era desinformación</span>
+  <span class="big-sub" id="bs1">54 de 104 verificaciones resultaron falsas, engañosas o no comprobables · ciclo electoral Honduras 2025–2026</span>
+</div>
+
+<!-- ══ 2. RELEVANCIA ════════════════════════════════════════════ -->
+<section id="relevancia">
+<div class="section">
+  <span class="eyebrow">¿Por qué hablamos de esto?</span>
+  <h2>Verificación y desinformación en procesos electorales</h2>
+  <p class="drop-cap">La desinformación digital no es un fenómeno nuevo, pero durante los procesos electorales adquiere una dimensión crítica: puede alterar la percepción ciudadana, debilitar la confianza en las instituciones y moldear el resultado de una elección sin disparar un solo voto inválido.</p>
+
+  <h3>Antecedentes e investigaciones previas</h3>
+
+  <p>El estudio de la desinformación electoral en América Latina cuenta con referentes académicos y periodísticos consolidados. A continuación se presentan las fuentes que sustentan el contexto de esta investigación:</p>
+
+  <!-- REFERENCIA 1: Reuters Institute -->
+  <div class="ref-card" style="background:#fff;border-left:4px solid var(--teal);border-radius:6px;padding:16px 20px;margin:18px 0;box-shadow:0 2px 6px rgba(0,0,0,.07)">
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:6px">REUTERS INSTITUTE FOR THE STUDY OF JOURNALISM · OXFORD</div>
+    <p style="font-size:13.5px;color:var(--ink);margin:0 0 8px">El <em>Digital News Report 2024</em> —elaborado con más de 95,000 encuestados en 47 países— reporta que el <strong>59% de las personas se preocupa por no poder distinguir lo verdadero de lo falso en internet</strong>, cifra que aumentó 3 puntos porcentuales en un año. El informe también señala que TikTok y X son las plataformas donde más dificultad tienen los usuarios para identificar noticias falsas.</p>
+    <a href="https://reutersinstitute.politics.ox.ac.uk/digital-news-report/2024/dnr-executive-summary" target="_blank" style="font-size:12px;color:var(--teal);text-decoration:none;font-weight:700">→ Ver informe completo: reutersinstitute.politics.ox.ac.uk/digital-news-report/2024</a>
+  </div>
+
+  <!-- REFERENCIA 2: Desinformación electoral -->
+  <div class="ref-card" style="background:#fff;border-left:4px solid var(--red);border-radius:6px;padding:16px 20px;margin:18px 0;box-shadow:0 2px 6px rgba(0,0,0,.07)">
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:6px">SALAZAR REBOLLEDO, G. · El Colegio de México · 2024</div>
+    <p style="font-size:13.5px;color:var(--ink);margin:0 0 8px">El artículo <em>"Votar en tiempos de desinformación: nuevos patrones informativos y comportamiento electoral"</em> documenta cómo los canales digitales han expandido el alcance y la velocidad de circulación de la información falsa durante períodos electorales, con especial énfasis en países del Sur global. Señala que <strong>la IA ha sofisticado el tipo de desinformación que circula</strong> en forma de audio, video e imágenes manipuladas.</p>
+    <a href="https://estudiossociologicos.colmex.mx/index.php/es/article/view/2538" target="_blank" style="font-size:12px;color:var(--red);text-decoration:none;font-weight:700">→ Ver artículo: estudiossociologicos.colmex.mx</a>
+  </div>
+
+  <!-- REFERENCIA 3: Chequeado -->
+  <div class="ref-card" style="background:#fff;border-left:4px solid var(--navy);border-radius:6px;padding:16px 20px;margin:18px 0;box-shadow:0 2px 6px rgba(0,0,0,.07)">
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--navy);margin-bottom:6px">CHEQUEADO · Argentina · desde 2010</div>
+    <p style="font-size:13.5px;color:var(--ink);margin:0 0 8px">Primera y principal plataforma de fact-checking de América Latina, referente metodológico para este estudio. Su investigación <em>"Chequeado en Argentina: fact-checking y la propagación de noticias falsas en redes sociales"</em> documenta cómo las correcciones se propagan de forma desigual según el tipo de plataforma y actor político, estableciendo una metodología replicable que Chekiá adopta en Honduras.</p>
+    <a href="https://chequeado.com" target="_blank" style="font-size:12px;color:var(--navy);text-decoration:none;font-weight:700">→ chequeado.com</a>
+    <span style="margin:0 8px;color:var(--gray)">·</span>
+    <a href="https://chequeado.com/wp-content/uploads/2021/02/Chequeado-en-Argentina.-Fact-checking-y-la-propagacion-de-noticias-falsas-en-redes-sociales.pdf" target="_blank" style="font-size:12px;color:var(--navy);text-decoration:none;font-weight:700">→ Ver estudio (PDF)</a>
+  </div>
+
+  <!-- REFERENCIA 4: Observatorio UCM -->
+  <div class="ref-card" style="background:#fff;border-left:4px solid var(--amber);border-radius:6px;padding:16px 20px;margin:18px 0;box-shadow:0 2px 6px rgba(0,0,0,.07)">
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:6px">OBSERVATORIO COMPLUTENSE DE DESINFORMACIÓN · UCM · España</div>
+    <p style="font-size:13.5px;color:var(--ink);margin:0 0 8px">El proyecto de <em>Observación Electoral</em> de la Universidad Complutense de Madrid trabajó con autoridades electorales, instituciones académicas y verificadores locales en varios países para <strong>identificar la desinformación que circuló antes, durante y después de las elecciones</strong>, midiendo la eficacia de la respuesta de los distintos actores involucrados. Su metodología es directamente compatible con el enfoque de este estudio.</p>
+    <a href="https://www.ucm.es/observatoriodesinformacion/observacion_electoral" target="_blank" style="font-size:12px;color:var(--amber);text-decoration:none;font-weight:700">→ ucm.es/observatoriodesinformacion/observacion_electoral</a>
+  </div>
+
+  <!-- REFERENCIA 5: CNE Honduras -->
+  <div class="ref-card" style="background:#fff;border-left:4px solid var(--purple);border-radius:6px;padding:16px 20px;margin:18px 0;box-shadow:0 2px 6px rgba(0,0,0,.07)">
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--purple);margin-bottom:6px">CONSEJO NACIONAL ELECTORAL (CNE) · Honduras · Mayo 2025</div>
+    <p style="font-size:13.5px;color:var(--ink);margin:0 0 8px">En mayo de 2025, el CNE aprobó oficialmente el cronograma electoral que regiría el proceso de elecciones generales de 2025 en Honduras, generando un ecosistema inmediato de interpretaciones, rumores y contenido verificado en redes sociales. Esta publicación fue reportada por Canal 8 del Estado de Honduras.</p>
+    <a href="https://cn8.spe.gob.hn/nacional/cne-aprueba-cronograma-electoral-para-elecciones-generales-de-2025/" target="_blank" style="font-size:12px;color:var(--purple);text-decoration:none;font-weight:700">→ Ver nota: cn8.spe.gob.hn · CNE aprueba cronograma electoral 2025</a>
+  </div>
+
+  <div class="pull-quote" data-reveal><p>"La desinformación electoral no es un error: es una estrategia."</p></div>
+
+  <p>La IFCN (International Fact-Checking Network) reconoce el fact-checking como herramienta fundamental para la salud democrática. Chekiá opera desde UNITEC como la plataforma académica de referencia para este trabajo en Honduras.</p>
+
+  <h3>¿Por qué es importante verificar durante elecciones?</h3>
+  <p>Las elecciones son el momento en que los ciudadanos toman decisiones colectivas sobre el futuro del país. Si esas decisiones se basan en información falsa, el proceso democrático queda comprometido en su base. Como documenta Salazar Rebolledo (2024), <strong>hay pocos estudios empíricos sobre los efectos de la desinformación en el Sur global</strong> — lo que hace que trabajos como el de Chekiá sean especialmente valiosos para la región. La verificación no es un lujo académico: es una herramienta de defensa ciudadana.</p>
+
+  <!-- Nota de transparencia -->
+  <div class="alert alert-info" data-reveal style="margin-top:24px">
+    <strong>Nota de transparencia editorial</strong>
+    <p>Todas las afirmaciones de esta sección están respaldadas por las fuentes citadas con sus respectivos enlaces. El dato del 59% del Reuters Institute 2024 refiere a la preocupación por distinguir lo real de lo falso en internet — no a la creencia en noticias falsas, dato que no está disponible con esa precisión en el informe público. Se evita cualquier cifra no sustentable directamente en las fuentes referenciadas.</p>
+  </div>
+</div>
+</section>
+<hr class="section-rule">
+
+<!-- ══ 3. GLOSARIO ══════════════════════════════════════════════ -->
+<div class="bg-alt">
+<section id="glosario">
+<div class="section">
+  <span class="eyebrow">Términos fundamentales</span>
+  <h2>Glosario de conceptos clave</h2>
+  <p>Para comprender este análisis es esencial manejar las definiciones que guían el trabajo de verificación periodística.</p>
+  <div class="glosario-grid">
+    <div class="glosario-card" style="border-left-color:var(--red)" data-delay="0">
+      <div class="glosario-term" style="color:var(--red)">Desinformación</div>
+      <div class="glosario-def">Información falsa o imprecisa difundida deliberadamente para engañar. Incluye contenido falso, engañoso y no comprobado. Difiere de la <em>misinformation</em> porque implica intención.</div>
+    </div>
+    <div class="glosario-card" style="border-left-color:var(--navy)" data-delay="100">
+      <div class="glosario-term" style="color:var(--navy)">Verificación de hechos</div>
+      <div class="glosario-def">Proceso periodístico sistemático de comprobar la veracidad de afirmaciones públicas, declaraciones políticas o contenidos virales mediante evidencia documental.</div>
+    </div>
+    <div class="glosario-card" style="border-left-color:var(--amber)" data-delay="200">
+      <div class="glosario-term" style="color:var(--amber)">Bulo / Noticia falsa</div>
+      <div class="glosario-def">Información inventada o manipulada que imita el formato de una noticia legítima. Su objetivo es generar confusión, miedo o desprestigio. Sinónimo coloquial de <em>fake news</em>.</div>
+    </div>
+    <div class="glosario-card" style="border-left-color:var(--teal)" data-delay="300">
+      <div class="glosario-term" style="color:var(--teal)">Fact-checking</div>
+      <div class="glosario-def">Disciplina periodística especializada en verificar afirmaciones de interés público. Sus resultados se clasifican en veredictos: Verdadero, Falso, Engañoso o No Comprobado.</div>
+    </div>
+    <div class="glosario-card" style="border-left-color:var(--purple)" data-delay="400">
+      <div class="glosario-term" style="color:var(--purple)">Discurso de odio</div>
+      <div class="glosario-def">Contenido que incita a la violencia, discriminación u hostilidad contra personas o grupos por características como etnia, género, religión u orientación política.</div>
+    </div>
+    <div class="glosario-card" style="border-left-color:var(--gray)" data-delay="500">
+      <div class="glosario-term" style="color:var(--gray)">Sesgo de selección</div>
+      <div class="glosario-def">Los verificadores eligen qué verificar. El dataset de Chekiá es un censo de lo verificado, no una muestra aleatoria del universo total de desinformación en Honduras.</div>
+    </div>
+  </div>
+</div>
+</section>
+</div>
+<hr class="section-rule">
+
+<!-- ══ 4+5. OBJETIVOS ═══════════════════════════════════════════ -->
+<div class="bg-dark">
+<section id="objetivos">
+<div class="section">
+  <span class="eyebrow">Propósito central</span>
+  <h2>Objetivo general</h2>
+  <div class="card card-dk" style="border-left:4px solid var(--red);margin:20px 0">
+    <p style="font-size:16px;line-height:1.72;color:#D0E4F7;margin:0">Analizar cómo la desinformación digital, los bulos y los discursos de odio circularon en redes sociales durante el año electoral en Honduras, identificando sus principales formas de difusión, narrativas e impacto en la conversación pública y la percepción ciudadana.</p>
+  </div>
+  <div class="alert alert-danger" data-reveal>
+    <strong>Hipótesis</strong>
+    <p>La desinformación se intensificó antes, durante y después de las elecciones de 2025 en Honduras, buscando influir en la percepción ciudadana, moldear expectativas sobre los resultados y debilitar la confianza ciudadana en el proceso electoral.</p>
+  </div>
+
+  <h2 style="margin-top:44px">Objetivos específicos</h2>
+  <ul class="obj-list">
+    <li class="obj-item" data-delay="0"><span class="obj-num">01</span><span class="obj-text">Identificar los principales casos de desinformación, bulos y discursos de odio difundidos en redes sociales durante el contexto electoral hondureño.</span></li>
+    <li class="obj-item" data-delay="70"><span class="obj-num">02</span><span class="obj-text">Analizar cuáles fueron las plataformas digitales más utilizadas para la circulación de contenido engañoso o polarizante durante el año electoral.</span></li>
+    <li class="obj-item" data-delay="140"><span class="obj-num">03</span><span class="obj-text">Examinar las narrativas, mensajes y estrategias digitales utilizadas para influir en la opinión pública a través de publicaciones falsas o discursos de confrontación.</span></li>
+    <li class="obj-item" data-delay="210"><span class="obj-num">04</span><span class="obj-text">Investigar cómo los contenidos desinformativos y los discursos de odio afectan la percepción ciudadana y la confianza en el proceso democrático hondureño.</span></li>
+    <li class="obj-item" data-delay="280"><span class="obj-num">05</span><span class="obj-text">Contrastar la información viral difundida en redes sociales con verificaciones realizadas por plataformas de fact-checking y fuentes oficiales.</span></li>
+    <li class="obj-item" data-delay="350"><span class="obj-num">06</span><span class="obj-text">Analizar el papel de medios de comunicación, plataformas de verificación y organizaciones especializadas frente al aumento de desinformación electoral en Honduras.</span></li>
+    <li class="obj-item" data-delay="420"><span class="obj-num">07</span><span class="obj-text">Reflexionar sobre el impacto social y político que puede generar la normalización de desinformación y discursos de odio durante procesos electorales.</span></li>
+  </ul>
+</div>
+</section>
+</div>
+<hr class="section-rule">
+
+<!-- ══ 6. METODOLOGÍA ════════════════════════════════════════════ -->
+<section id="metodologia">
+<div class="section">
+  <span class="eyebrow">Cómo se hizo</span>
+  <h2>Metodología</h2>
+  <div class="grid2">
+    <div class="card" data-delay="0">
+      <div class="glosario-term" style="color:var(--navy)">Tipo de investigación</div>
+      <ul style="padding-left:15px;margin-top:9px">
+        <li style="font-size:12.5px;margin-bottom:5px">Descriptiva y cuantitativa</li>
+        <li style="font-size:12.5px;margin-bottom:5px">Análisis de datos secundarios</li>
+        <li style="font-size:12.5px;margin-bottom:5px">Enfoque temporal longitudinal</li>
+        <li style="font-size:12.5px">Período: junio 2025 – febrero 2026</li>
+      </ul>
+    </div>
+    <div class="card" data-delay="100">
+      <div class="glosario-term" style="color:var(--navy)">Fuente consultada</div>
+      <ul style="padding-left:15px;margin-top:9px">
+        <li style="font-size:12.5px;margin-bottom:5px">Plataforma Chekiá (chekia.unitec.edu)</li>
+        <li style="font-size:12.5px;margin-bottom:5px">Dataset exportado en formato .xlsx</li>
+        <li style="font-size:12.5px;margin-bottom:5px">104 verificaciones únicas</li>
+        <li style="font-size:12.5px">Publicadas por 6 verificadores estudiantiles</li>
+      </ul>
+    </div>
+    <div class="card" data-delay="200">
+      <div class="glosario-term" style="color:var(--navy)">Análisis de datos</div>
+      <ul style="padding-left:15px;margin-top:9px">
+        <li style="font-size:12.5px;margin-bottom:5px">Tablas de frecuencia y cruce de variables</li>
+        <li style="font-size:12.5px;margin-bottom:5px">Tasas de desinformación por variable</li>
+        <li style="font-size:12.5px;margin-bottom:5px">Análisis temporal (mes, día, período)</li>
+        <li style="font-size:12.5px">Fórmulas: COUNTIF, COUNTIFS, TEXTO(), SI.ERROR</li>
+      </ul>
+    </div>
+    <div class="card" data-delay="300">
+      <div class="glosario-term" style="color:var(--navy)">Criterios de selección</div>
+      <ul style="padding-left:15px;margin-top:9px">
+        <li style="font-size:12.5px;margin-bottom:5px">Eliminación de registros duplicados</li>
+        <li style="font-size:12.5px;margin-bottom:5px">Corrección: 'Verdadeo' → 'Verdadero'</li>
+        <li style="font-size:12.5px;margin-bottom:5px">Normalización de nombres de plataformas</li>
+        <li style="font-size:12.5px">Exclusión de filas vacías y errores de digitación</li>
+      </ul>
+    </div>
+  </div>
+  <div class="alert alert-warn" data-reveal>
+    <strong>Definición de desinformación utilizada</strong>
+    <p><strong>Tasa estricta (F+E):</strong> solo Falso y Engañoso → 38.5% &nbsp;|&nbsp; <strong>Tasa amplia (F+E+NC):</strong> incluye No Comprobado → 51.92%. El contenido no comprobado genera el mismo daño informativo que el falso: el ciudadano queda sin la verdad verificada.</p>
+  </div>
+  <div class="alert alert-info" data-reveal>
+    <strong>Limitaciones metodológicas</strong>
+    <p>No es muestra aleatoria — es censo de lo verificado. Ausencia de datos en julio y octubre 2025. Categoría "Redes Sociales" genérica (14 casos sin plataforma exacta). Detección de IA no documenta la herramienta utilizada. El dataset cubre dos años calendario (2025–2026).</p>
+  </div>
+  <p class="footnote">Fuentes: Chekiá (s.f.) chekia.unitec.edu · CNE (2025) Canal 8 · Elaboración propia · n=104 verificaciones únicas</p>
+</div>
+</section>
+<hr class="section-rule">
+
+<!-- ══ 7. HALLAZGOS ═════════════════════════════════════════════ -->
+<div class="bg-alt">
+<section id="hallazgos">
+<div class="section-wide">
+  <span class="eyebrow">Lo que dicen los datos</span>
+  <h2>Hallazgos principales</h2>
+
+  <!-- H1: VEREDICTOS -->
+  <div class="hallazgo" data-delay="0">
+    <div class="hallazgo-hdr" style="background:var(--red)">
+      <div class="hallazgo-num">1</div>
+      <div class="hallazgo-title">La desinformación supera el 50% del contenido verificado</div>
+    </div>
+    <div class="hallazgo-body">
+      <div class="vgrid">
+        <div class="vc vc-v" data-delay="0"><span class="vc-n">50</span><span class="vc-lbl">Verdadero</span><span class="vc-pct">48.08% del total</span><p class="vc-def">Información confirmada con evidencia documental o fuente oficial.</p></div>
+        <div class="vc vc-f" data-delay="80"><span class="vc-n">29</span><span class="vc-lbl">Falso</span><span class="vc-pct">27.88% del total</span><p class="vc-def">Información incorrecta, refutada con pruebas concretas.</p></div>
+        <div class="vc vc-nc" data-delay="160"><span class="vc-n">14</span><span class="vc-lbl">No Comprobado</span><span class="vc-pct">13.46% del total</span><p class="vc-def">Sin evidencia suficiente. Genera el mismo daño informativo que el Falso.</p></div>
+        <div class="vc vc-e" data-delay="240"><span class="vc-n">11</span><span class="vc-lbl">Engañoso</span><span class="vc-pct">10.58% del total</span><p class="vc-def">El más difícil de detectar: verdad parcial con contexto distorsionado.</p></div>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">Tabla 1.3 — Distribución por veredicto</div>
+        <div class="chart-sub">n=104 · Chekiá junio 2025 – febrero 2026</div>
+        <div class="chart-wrap" style="height:300px"><canvas id="cVeredicto"></canvas></div>
+      </div>
+      <div class="alert alert-warn" data-reveal>
+        <strong>Nota metodológica</strong>
+        <p>Tasa amplia (F+E+NC): 54 casos · 51.92% &nbsp;|&nbsp; Tasa estricta (F+E): 40 casos · 38.46%. Ambas cifras son válidas y se presentan con transparencia.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- H2: TEMPORAL -->
+  <div class="hallazgo" data-delay="80">
+    <div class="hallazgo-hdr" style="background:#D97706">
+      <div class="hallazgo-num">2</div>
+      <div class="hallazgo-title">El período electoral concentra el mayor volumen absoluto de desinformación</div>
+    </div>
+    <div class="hallazgo-body">
+      <div class="chart-box">
+        <div class="chart-title">Tabla 1.4 — Distribución por mes y período electoral</div>
+        <div class="chart-sub">Casos verificados y % de desinformación (F+E+NC) por mes</div>
+        <div class="chart-wrap" style="height:320px"><canvas id="cMeses"></canvas></div>
+      </div>
+      <div style="overflow-x:auto;margin-top:14px">
+        <table class="dtable">
+          <thead><tr><th>Mes</th><th>Casos</th><th>% Total</th><th>F+E+NC</th><th>% Desinfo.</th><th>Período</th></tr></thead>
+          <tbody>
+            <tr><td>Junio 2025</td><td>27</td><td class="pct">25.96%</td><td>11</td><td class="pct" style="color:var(--teal)">40.74%</td><td><span class="tag t-pre">Pre-electoral</span></td></tr>
+            <tr><td>Agosto 2025</td><td>16</td><td class="pct">15.38%</td><td>13</td><td class="pct" style="color:var(--red);font-weight:700">81.25%</td><td><span class="tag t-elec">Electoral</span></td></tr>
+            <tr><td>Septiembre 2025</td><td>9</td><td class="pct">8.65%</td><td>3</td><td class="pct" style="color:var(--teal)">33.33%</td><td><span class="tag t-elec">Electoral</span></td></tr>
+            <tr><td>Noviembre 2025</td><td>27</td><td class="pct">25.96%</td><td>13</td><td class="pct" style="color:var(--purple)">48.15%</td><td><span class="tag t-nov">Día elecciones</span></td></tr>
+            <tr><td>Diciembre 2025</td><td>14</td><td class="pct">13.46%</td><td>5</td><td class="pct" style="color:var(--green)">35.71%</td><td><span class="tag t-post">Post-electoral</span></td></tr>
+            <tr><td>Enero 2026</td><td>4</td><td class="pct">3.85%</td><td>2</td><td class="pct" style="color:var(--amber)">50.00%</td><td><span class="tag t-post">Post-electoral</span></td></tr>
+            <tr><td>Febrero 2026</td><td>7</td><td class="pct">6.73%</td><td>7</td><td class="pct" style="color:var(--red);font-weight:700">100.00%</td><td><span class="tag t-tardio">Post-elect. tardío</span></td></tr>
+            <tr><td>TOTAL</td><td>104</td><td class="pct">100%</td><td>54</td><td class="pct">51.92%</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert alert-warn" data-reveal>
+        <strong>Distinción crítica: volumen ≠ tasa</strong>
+        <p>Agosto–septiembre = mayor VOLUMEN absoluto (16 casos desinformación, 64% combinado). Febrero 2026 = mayor TASA (100%, 7/7). Son métricas distintas que cuentan historias distintas.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- H3: TEMAS -->
+  <div class="hallazgo" data-delay="160">
+    <div class="hallazgo-hdr" style="background:var(--navy)">
+      <div class="hallazgo-num">3</div>
+      <div class="hallazgo-title">Política y Elecciones monopolizan el 66.3% del ecosistema informativo</div>
+    </div>
+    <div class="hallazgo-body">
+      <div class="chart-box">
+        <div class="chart-title">Tabla 1.5 — Distribución por tema y tasa de desinformación</div>
+        <div class="chart-sub">% de desinformación por categoría temática · n=104</div>
+        <div class="chart-wrap" style="height:320px"><canvas id="cTemas"></canvas></div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="dtable">
+          <thead><tr><th>Tema</th><th>Total</th><th>%</th><th>Verdadero</th><th>Falso</th><th>Engañoso</th><th>N.Comp.</th><th>% Desinfo.</th></tr></thead>
+          <tbody>
+            <tr><td>Política</td><td>52</td><td class="pct">50.00%</td><td>17</td><td>18</td><td>9</td><td>8</td><td class="pct" style="color:var(--red)">67.31%</td></tr>
+            <tr><td>Elecciones 2025</td><td>17</td><td class="pct">16.35%</td><td>5</td><td>6</td><td>0</td><td>6</td><td class="pct" style="color:var(--red)">70.59%</td></tr>
+            <tr><td>Economía</td><td>13</td><td class="pct">12.50%</td><td>11</td><td>1</td><td>1</td><td>0</td><td class="pct" style="color:var(--green)">15.38%</td></tr>
+            <tr><td>Medioambiente y Salud</td><td>8</td><td class="pct">7.69%</td><td>7</td><td>1</td><td>0</td><td>0</td><td class="pct" style="color:var(--green)">12.50%</td></tr>
+            <tr><td>Género y Sociedad</td><td>7</td><td class="pct">6.73%</td><td>4</td><td>2</td><td>1</td><td>0</td><td class="pct" style="color:var(--amber)">42.86%</td></tr>
+            <tr><td>Seguridad</td><td>6</td><td class="pct">5.77%</td><td>6</td><td>0</td><td>0</td><td>0</td><td class="pct" style="color:var(--green)"><strong>0.00%</strong></td></tr>
+            <tr><td>Deportes</td><td>1</td><td class="pct">0.96%</td><td>0</td><td>1</td><td>0</td><td>0</td><td class="pct" style="color:var(--red)">100.00%</td></tr>
+            <tr><td>TOTAL</td><td>104</td><td class="pct">100%</td><td>50</td><td>29</td><td>11</td><td>14</td><td class="pct">51.92%</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="alert alert-success" data-reveal>
+        <strong>Hallazgo destacado</strong>
+        <p>Seguridad registra 0% de desinformación: los 6 casos verificados resultaron todos Verdaderos. La desinformación se dirige selectivamente a temas de poder político y electoral.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- H4: PLATAFORMAS -->
+  <div class="hallazgo" data-delay="240">
+    <div class="hallazgo-hdr" style="background:#1D4ED8">
+      <div class="hallazgo-num">4</div>
+      <div class="hallazgo-title">Facebook lidera en volumen · X lidera en tasa de desinformación</div>
+    </div>
+    <div class="hallazgo-body">
+      <div class="chart-box">
+        <div class="chart-title">Tabla 1.6 — Distribución por plataforma de difusión</div>
+        <div class="chart-sub">Casos verificados y % de desinformación por plataforma</div>
+        <div class="chart-wrap" style="height:340px"><canvas id="cPlataformas"></canvas></div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="dtable">
+          <thead><tr><th>Plataforma</th><th>Casos</th><th>% Total</th><th>% Desinfo.</th><th>Observación</th></tr></thead>
+          <tbody>
+            <tr><td>Facebook</td><td>25</td><td class="pct">24.04%</td><td class="pct" style="color:#1D4ED8">60.00%</td><td>Mayor volumen</td></tr>
+            <tr><td>X (Twitter)</td><td>22</td><td class="pct">21.15%</td><td class="pct" style="color:var(--red)">68.18%</td><td>Mayor tasa entre las grandes</td></tr>
+            <tr><td>Redes Sociales*</td><td>14</td><td class="pct">13.46%</td><td class="pct" style="color:var(--purple)">64.29%</td><td>Categoría genérica</td></tr>
+            <tr><td>Medio de comunicación</td><td>14</td><td class="pct">13.46%</td><td class="pct" style="color:var(--green)">28.57%</td><td>—</td></tr>
+            <tr><td>Sin dato</td><td>11</td><td class="pct">10.58%</td><td class="pct">27.27%</td><td>Limitación de registro</td></tr>
+            <tr><td>Sitio web</td><td>7</td><td class="pct">6.73%</td><td class="pct" style="color:var(--green)">14.29%</td><td>Menor tasa de desinfo.</td></tr>
+            <tr><td>TikTok</td><td>5</td><td class="pct">4.81%</td><td class="pct" style="color:var(--red);font-weight:700">80.00%</td><td>Alta tasa, bajo volumen</td></tr>
+            <tr><td>Comunicado</td><td>4</td><td class="pct">3.85%</td><td class="pct" style="color:var(--amber)">75.00%</td><td>—</td></tr>
+            <tr><td>CNE / Art. OPS</td><td>2</td><td class="pct">1.92%</td><td class="pct" style="color:var(--green)">0.00%</td><td>Fuentes oficiales</td></tr>
+            <tr><td>TOTAL</td><td>104</td><td class="pct">100%</td><td class="pct">51.92%</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- H5: IA -->
+  <div class="hallazgo" data-delay="320">
+    <div class="hallazgo-hdr" style="background:var(--purple)">
+      <div class="hallazgo-num">5</div>
+      <div class="hallazgo-title">La IA multiplica el riesgo de falsedad · 85.71% tasa de desinformación</div>
+    </div>
+    <div class="hallazgo-body">
+      <div class="grid2" style="margin-top:18px">
+        <div class="chart-box" style="margin:0">
+          <div class="chart-title">Tabla 1.7 — Uso de IA y Discurso de odio</div>
+          <div class="chart-sub">Casos con y sin cada variable</div>
+          <div class="chart-wrap" style="height:260px"><canvas id="cIA"></canvas></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="card" style="border-left:4px solid var(--purple)">
+            <span class="card-n" style="color:var(--purple);font-size:48px">85.71%</span>
+            <span class="card-lbl" style="color:var(--purple)">Tasa desinfo. con IA</span>
+            <p class="card-desc">6 de 7 casos con IA detectada resultaron desinformación. La tasa más alta de todas las variables analizadas.</p>
+          </div>
+          <div class="card" style="border-left:4px solid var(--red)">
+            <span class="card-n" style="color:var(--red);font-size:48px">2</span>
+            <span class="card-lbl" style="color:var(--red)">Discurso de odio</span>
+            <p class="card-desc">Ambos casos en agosto 2025, el mes de mayor tensión electoral. 1.92% del total.</p>
+          </div>
+        </div>
+      </div>
+      <div class="alert alert-warn" data-reveal>
+        <strong>Limitación</strong>
+        <p>La columna de Uso de IA existe en el dataset pero no especifica la herramienta de detección utilizada. El 7.7% detectado es probablemente un piso, no el valor real.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- H6: FEBRERO -->
+  <div class="hallazgo" data-delay="400">
+    <div class="hallazgo-hdr" style="background:var(--navyDk);border-left:4px solid var(--red)">
+      <div class="hallazgo-num">6</div>
+      <div class="hallazgo-title">Febrero 2026: el único mes con 100% de desinformación en el ciclo</div>
+    </div>
+    <div class="hallazgo-body">
+      <div class="big-reveal" style="padding:44px 20px;border-radius:8px;margin:18px 0">
+        <span class="big-num vis" style="font-size:clamp(50px,11vw,110px)">100%</span>
+        <span class="big-lbl vis">7 de 7 casos en febrero 2026 resultaron desinformación</span>
+        <span class="big-sub vis">El período de transición post-electoral fue el mes más contaminado del ciclo completo</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- H7: DÍAS -->
+  <div class="hallazgo" data-delay="480">
+    <div class="hallazgo-hdr" style="background:var(--teal)">
+      <div class="hallazgo-num">7</div>
+      <div class="hallazgo-title">Los viernes concentran el 26.92% de las verificaciones publicadas</div>
+    </div>
+    <div class="hallazgo-body">
+      <div class="chart-box">
+        <div class="chart-title">Tabla 1.8 — Verificaciones por día de la semana</div>
+        <div class="chart-sub">Distribución de las 104 verificaciones por día de publicación</div>
+        <div class="chart-wrap" style="height:280px"><canvas id="cDias"></canvas></div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="dtable">
+          <thead><tr><th>Día</th><th>Verificaciones</th><th>% Total</th><th>Observación</th></tr></thead>
+          <tbody>
+            <tr><td>Viernes</td><td>28</td><td class="pct" style="color:var(--teal)">26.92%</td><td>Día más activo</td></tr>
+            <tr><td>Martes</td><td>22</td><td class="pct">21.15%</td><td>Segundo más activo</td></tr>
+            <tr><td>Domingo</td><td>14</td><td class="pct">13.46%</td><td>Alta actividad en fin de semana</td></tr>
+            <tr><td>Lunes</td><td>13</td><td class="pct">12.50%</td><td>—</td></tr>
+            <tr><td>Miércoles</td><td>13</td><td class="pct">12.50%</td><td>—</td></tr>
+            <tr><td>Jueves</td><td>7</td><td class="pct">6.73%</td><td>Menor actividad entre semana</td></tr>
+            <tr><td>Sábado</td><td>7</td><td class="pct">6.73%</td><td>—</td></tr>
+            <tr><td>TOTAL</td><td>104</td><td class="pct">100%</td><td>—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+</div>
+</section>
+</div>
+<hr class="section-rule">
+
+<!-- ══ 8+9. CONCLUSIONES ═════════════════════════════════════════ -->
+<div class="bg-dark">
+<section id="conclusiones">
+<div class="section">
+  <span class="eyebrow">Lo que concluimos</span>
+  <h2>Conclusión principal</h2>
+  <div class="card card-dk" style="border-left:4px solid var(--red);margin:20px 0">
+    <p style="font-size:15.5px;line-height:1.75;color:#D0E4F7;margin:0">Honduras enfrentó durante su ciclo electoral 2025–2026 un ecosistema informativo altamente contaminado: más de la mitad —el 51.92%— del contenido verificado por Chekiá resultó desinformación. El período electoral de agosto-septiembre concentró el mayor volumen absoluto (64% de tasa combinada), mientras que febrero de 2026 registró la tasa más alta del ciclo completo (100%), confirmando que la desinformación no es un fenómeno acotado al día de las elecciones, sino que permea todo el proceso democrático, antes, durante y después del voto.</p>
+  </div>
+
+  <!-- CONFIRMACIÓN DE HIPÓTESIS — tipografía corregida sobre fondo oscuro -->
+  <div class="hipotesis-box" data-reveal>
+    <span class="hipotesis-label">Confirmación de hipótesis</span>
+    <p class="hipotesis-text">La hipótesis se confirma: la desinformación aumentó de forma significativa durante los períodos de mayor tensión política. Agosto 2025 —con 81.25%— es el dato más contundente. La política concentra el 67.31% de tasa, y junto con Elecciones 2025 acaparan el 66.3% de todo el contenido verificado.</p>
+  </div>
+
+  <div class="pull-quote" data-reveal style="margin-top:36px">
+    <p>"La desinformación no descansó con los resultados. Llegó para quedarse."</p>
+  </div>
+
+  <h2 style="margin-top:44px">Otras conclusiones</h2>
+  <div class="timeline">
+    <div class="tl-item" data-delay="0">
+      <div class="tl-dot" style="background:#1D4ED8"></div>
+      <div class="tl-box"><div class="tl-title">1. Las redes sociales son el principal vector de desinformación</div><p style="font-size:12.5px;margin:5px 0 0;color:#374151">Facebook (60%), X (68.2%) y TikTok (80%) dominan. Los sitios web formales registran solo 14.3%. La desinformación es un fenómeno nativo de redes sociales, no de medios tradicionales.</p></div>
+    </div>
+    <div class="tl-item" data-delay="100">
+      <div class="tl-dot" style="background:var(--purple)"></div>
+      <div class="tl-box"><div class="tl-title">2. La Inteligencia Artificial amplifica la falsedad de forma desproporcionada</div><p style="font-size:12.5px;margin:5px 0 0;color:#374151">7 casos con IA detectada, 85.71% de tasa. Cuando hay IA involucrada, la probabilidad de desinformación es 1.65 veces mayor que el promedio general del dataset.</p></div>
+    </div>
+    <div class="tl-item" data-delay="200">
+      <div class="tl-dot" style="background:var(--green)"></div>
+      <div class="tl-box"><div class="tl-title">3. Seguridad: el único tema inmune a la desinformación</div><p style="font-size:12.5px;margin:5px 0 0;color:#374151">Los 6 casos de Seguridad resultaron todos Verdaderos (0% desinformación). La desinformación se dirige selectivamente a temas de poder político y electoral.</p></div>
+    </div>
+    <div class="tl-item" data-delay="300">
+      <div class="tl-dot" style="background:var(--amber)"></div>
+      <div class="tl-box"><div class="tl-title">4. La brecha académica es una vulnerabilidad institucional</div><p style="font-size:12.5px;margin:5px 0 0;color:#374151">Sin datos en julio y octubre 2025 por vacaciones universitarias. El modelo de Chekiá depende del calendario académico, creando zonas ciegas en plena campaña electoral.</p></div>
+    </div>
+  </div>
+</div>
+</section>
+</div>
+<hr class="section-rule">
+
+<!-- ══ 10. RECOMENDACIONES ══════════════════════════════════════ -->
+<section id="recomendaciones">
+<div class="section-wide">
+  <span class="eyebrow">Acciones propuestas</span>
+  <h2>Recomendaciones</h2>
+  <p>Basadas en la evidencia del análisis, dirigidas a cinco actores clave del ecosistema informativo hondureño.</p>
+  <div class="rec-grid">
+    <div class="rec-card" style="border-top-color:var(--green)" data-delay="0">
+      <div class="rec-actor" style="color:var(--green)">👥 Ciudadanía</div>
+      <ul>
+        <li>Verificar antes de compartir: consultar Chekiá, Reuters Fact Check o IFCN.</li>
+        <li>Desconfiar de contenido muy emocional o que pide reenviar urgentemente.</li>
+        <li>Los sitios web formales tienen menor tasa de desinformación que las redes sociales.</li>
+        <li>Reportar contenido sospechoso a las plataformas y a medios verificadores.</li>
+      </ul>
+    </div>
+    <div class="rec-card" style="border-top-color:var(--navy)" data-delay="80">
+      <div class="rec-actor" style="color:var(--navy)">📰 Medios de comunicación</div>
+      <ul>
+        <li>Incorporar protocolos de verificación antes de amplificar contenido viral.</li>
+        <li>Establecer alianzas con plataformas de fact-checking como Chekiá.</li>
+        <li>Capacitar redacciones en detección de contenido generado con IA.</li>
+        <li>Contextualizar el origen de fuentes al publicar información electoral.</li>
+      </ul>
+    </div>
+    <div class="rec-card" style="border-top-color:var(--purple)" data-delay="160">
+      <div class="rec-actor" style="color:var(--purple)">🏛️ Instituciones electorales</div>
+      <ul>
+        <li>Diseñar campañas de alfabetización mediática previas al período electoral.</li>
+        <li>Crear canales oficiales verificados y de fácil acceso ciudadano.</li>
+        <li>Compartir datos electorales en formatos abiertos para facilitar la verificación.</li>
+        <li>Integrar unidades de contra-desinformación en las próximas elecciones.</li>
+      </ul>
+    </div>
+    <div class="rec-card" style="border-top-color:var(--amber)" data-delay="240">
+      <div class="rec-actor" style="color:var(--amber)">📱 Plataformas digitales</div>
+      <ul>
+        <li>Etiquetar contenido no verificado durante períodos electorales.</li>
+        <li>Reducir la viralidad de contenido que activa señales de desinformación.</li>
+        <li>Fortalecer alianzas con organizaciones de fact-checking certificadas por IFCN.</li>
+        <li>Implementar herramientas de detección de IA generativa.</li>
+      </ul>
+    </div>
+    <div class="rec-card" style="border-top-color:var(--red)" data-delay="320">
+      <div class="rec-actor" style="color:var(--red)">✅ Organizaciones de verificación</div>
+      <ul>
+        <li>Cubrir julio y octubre con verificadores externos o alumni de UNITEC.</li>
+        <li>Estandarizar formulario: eliminar "Redes Sociales" genérico, documentar herramienta de IA.</li>
+        <li>Publicar el dataset en formato abierto (CSV) para uso académico independiente.</li>
+        <li>Conectar con IFCN, Chequeado y Verificado para metodología compartida.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</section>
+<hr class="section-rule">
+
+<!-- ══ 11. Q&A ══════════════════════════════════════════════════ -->
+<section id="preguntas">
+  <p class="closing-line">Los datos no mienten.<br>Nosotros los <em>verificamos</em>.</p>
+  <p class="closing-meta">Chekiá · UNITEC · Honduras · Periodismo de Investigación II · 2026</p>
+  <a class="closing-url" href="https://chekia.unitec.edu" target="_blank">chekia.unitec.edu</a>
+  <p style="color:#475569;font-size:13px;margin-top:36px;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.7">Este es el espacio para preguntas, respuestas y comentarios del equipo investigador.<br>Todos los hallazgos presentados están respaldados por las tablas y gráficos de este análisis.</p>
+</section>
+
+<footer>
+  <p>
+    <strong style="color:#CBD5E1">Honduras en año electoral: propagación de bulos y discursos de odio en redes sociales</strong><br>
+    Análisis 104 casos · Junio 2025 – Febrero 2026 · Periodismo de Investigación II<br>
+    CEUTEC Tegucigalpa · Docente: Haydi Carrasco · <a href="https://chekia.unitec.edu" target="_blank">chekia.unitec.edu</a><br><br>
+    Referencias: CNE (2025) Canal 8 · Chekiá UNITEC · Reuters Institute 2024 · Elaboración propia
+  </p>
+</footer>
+
+<script>
+// PROGRESS
+window.addEventListener('scroll',()=>{
+  document.getElementById('progress-bar').style.width=(window.scrollY/(document.documentElement.scrollHeight-window.innerHeight)*100)+'%';
+},{passive:true});
+
+// ACTIVE NAV
+const sects=document.querySelectorAll('section[id]');
+window.addEventListener('scroll',()=>{
+  let cur='';
+  sects.forEach(s=>{if(window.scrollY>=s.offsetTop-70)cur=s.id});
+  document.querySelectorAll('.nav-links a').forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+cur));
+},{passive:true});
+
+// OBSERVER
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(({target:el,isIntersecting})=>{
+    if(!isIntersecting)return;
+    const d=parseInt(el.dataset.delay||0);
+    if(el.id==='bn1'){
+      setTimeout(()=>{el.classList.add('vis');document.getElementById('bl1').classList.add('vis');document.getElementById('bs1').classList.add('vis');},d);
+    } else setTimeout(()=>el.classList.add('vis'),d);
+    io.unobserve(el);
+  });
+},{threshold:.1});
+document.querySelectorAll('.card,.vc,.glosario-card,.obj-item,.hallazgo,.tl-item,.rec-card,.alert,.pull-quote,.chart-box,.big-num,.hipotesis-box').forEach(el=>io.observe(el));
+
+// COLORS
+const CLR={green:'#15803D',red:'#C0392B',purple:'#6D28D9',amber:'#B45309',navy:'#1B2D4F',teal:'#0E7490',blue:'#1D4ED8',gray:'#64748B'};
+
+// CHART 1: DONUT VEREDICTOS
+new Chart(document.getElementById('cVeredicto'),{type:'doughnut',
+  data:{labels:['Verdadero','Falso','No Comprobado','Engañoso'],
+        datasets:[{data:[50,29,14,11],backgroundColor:[CLR.green,CLR.red,CLR.purple,CLR.amber],borderWidth:3,borderColor:'#fff'}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{position:'right',labels:{font:{size:12},padding:14}},
+    tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} casos (${(c.raw/104*100).toFixed(1)}%)`}}}}
+});
+
+// CHART 2: MESES COMBO
+new Chart(document.getElementById('cMeses'),{type:'bar',
+  data:{labels:['Jun 25','Ago 25','Sep 25','Nov 25','Dic 25','Ene 26','Feb 26'],
+        datasets:[
+          {label:'Total casos',data:[27,16,9,27,14,4,7],backgroundColor:'rgba(27,45,79,.7)',yAxisID:'y'},
+          {label:'% Desinformación',data:[40.74,81.25,33.33,48.15,35.71,50,100],type:'line',borderColor:CLR.red,backgroundColor:'rgba(192,57,43,.1)',tension:.4,yAxisID:'y1',pointRadius:5,pointBackgroundColor:CLR.red,fill:true}
+        ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{y:{title:{display:true,text:'N° casos'},grid:{color:'#E8EDF4'}},
+            y1:{position:'right',title:{display:true,text:'% Desinformación'},max:110,ticks:{callback:v=>v+'%'},grid:{display:false}}},
+    plugins:{legend:{position:'top'},tooltip:{mode:'index'}}}
+});
+
+// CHART 3: TEMAS HORIZONTAL
+new Chart(document.getElementById('cTemas'),{type:'bar',
+  data:{labels:['Deportes','Elecciones 25','Política','Género/Soc.','Economía','M. y Salud','Seguridad'],
+        datasets:[{label:'% Desinformación',data:[100,70.59,67.31,42.86,15.38,12.5,0],
+          backgroundColor:[CLR.red,CLR.blue,CLR.navy,'#7C3AED',CLR.amber,CLR.green,CLR.gray],borderRadius:4}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    scales:{x:{max:110,ticks:{callback:v=>v+'%'},grid:{color:'#E8EDF4'}},y:{grid:{display:false}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw}% desinformación`}}}}
+});
+
+// CHART 4: PLATAFORMAS COMBO
+new Chart(document.getElementById('cPlataformas'),{type:'bar',
+  data:{labels:['TikTok','Comunicado','X','Redes Soc.','Facebook','Medio dig.','Sin dato','Sitio web','CNE/OPS'],
+        datasets:[
+          {label:'Casos',data:[5,4,22,14,25,14,11,7,2],backgroundColor:'rgba(27,45,79,.65)',yAxisID:'y'},
+          {label:'% Desinfo.',data:[80,75,68.18,64.29,60,28.57,27.27,14.29,0],type:'line',borderColor:CLR.red,backgroundColor:'rgba(192,57,43,.1)',tension:.4,yAxisID:'y1',pointRadius:5,pointBackgroundColor:CLR.red,fill:true}
+        ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{y:{title:{display:true,text:'N° casos'},grid:{color:'#E8EDF4'}},
+            y1:{position:'right',title:{display:true,text:'% Desinfo.'},max:110,ticks:{callback:v=>v+'%'},grid:{display:false}}},
+    plugins:{legend:{position:'top'},tooltip:{mode:'index'}}}
+});
+
+// CHART 5: IA AGRUPADO
+new Chart(document.getElementById('cIA'),{type:'bar',
+  data:{labels:['Uso de IA','Discurso de odio'],
+        datasets:[
+          {label:'Con',data:[7,2],backgroundColor:[CLR.red,CLR.amber]},
+          {label:'Sin',data:[97,102],backgroundColor:['rgba(107,114,128,.3)','rgba(107,114,128,.3)']}
+        ]},
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,grid:{color:'#E8EDF4'}}},
+    plugins:{legend:{position:'top'}}}
+});
+
+// CHART 6: DÍAS
+new Chart(document.getElementById('cDias'),{type:'bar',
+  data:{labels:['Viernes','Martes','Domingo','Lunes','Miércoles','Jueves','Sábado'],
+        datasets:[{label:'Verificaciones',data:[28,22,14,13,13,7,7],
+          backgroundColor:[CLR.teal,CLR.navy,CLR.blue,CLR.gray,CLR.gray,'rgba(100,116,139,.45)','rgba(100,116,139,.45)'],borderRadius:4}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    scales:{y:{grid:{color:'#E8EDF4'}},x:{grid:{display:false}}},
+    plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>`${c.raw} verificaciones (${(c.raw/104*100).toFixed(1)}%)`}}}}
+});
+</script>
+</body>
+</html>
